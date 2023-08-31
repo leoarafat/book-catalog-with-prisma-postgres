@@ -10,9 +10,9 @@ datasource db {
 model User {
   id         String   @id @default(uuid())
   name       String
-  email      String
+  email      String   @unique
   password   String
-  role       String   @default("customer")
+  role       RoleUser @default(customer)
   contactNo  String
   address    String
   profileImg String
@@ -47,7 +47,7 @@ model Book {
 model Review {
   id        String   @id @default(uuid())
   review    String
-  rating    String
+  rating    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
@@ -57,11 +57,22 @@ model Review {
 }
 
 model Order {
-  id           String   @id @default(uuid())
+  id           String     @id @default(uuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
   orderedBooks Json
-  status       String   @default("pending")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  status       StatusType @default(pending)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum RoleUser {
+  admin
+  customer
+}
+
+enum StatusType {
+  pending
+  shipped
+  delivered
 }
