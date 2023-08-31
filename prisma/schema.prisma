@@ -12,7 +12,7 @@ model User {
   name       String
   email      String
   password   String
-  role       Usertype @default(customer)
+  role       String   @default("customer")
   contactNo  String
   address    String
   profileImg String
@@ -57,21 +57,11 @@ model Review {
 }
 
 model Order {
-  id        String     @id @default(uuid())
-  userId    String
-  user      User       @relation(fields: [userId], references: [id])
-  status    Statustype @default(pending)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-}
-
-enum Usertype {
-  admin
-  customer
-}
-
-enum Statustype {
-  pending
-  shipped
-  delivered
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  orderedBooks Json
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
