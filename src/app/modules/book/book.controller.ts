@@ -6,6 +6,7 @@ import { BookService } from './book.service';
 import { Book } from '@prisma/client';
 import pick from '../../../shared/pick';
 import paginationFields from '../../../constants/pagination';
+import { BookFilterAbleFileds } from './book.constants';
 
 const createBook = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.createBook(req.body);
@@ -17,7 +18,8 @@ const createBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllBook = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, []);
+  const filters = pick(req.query, BookFilterAbleFileds);
+
   const paginationOptions = pick(req.query, paginationFields);
   const result = await BookService.getAllBook(filters, paginationOptions);
   sendResponse<Book[]>(res, {
@@ -40,12 +42,14 @@ const getSingleBook = catchAsync(async (req: Request, res: Response) => {
 });
 const getBooksByCategoryId = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await BookService.getBooksByCategoryId(id);
-  sendResponse(res, {
+  const paginationOptions = pick(req.query, paginationFields);
+  const result = await BookService.getBooksByCategoryId(id, paginationOptions);
+  sendResponse<Book[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Books with associated category data fetched successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const updateSingleBook = catchAsync(async (req: Request, res: Response) => {
