@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "D:\\next-level\\Prisma\\book-catalog-backend\\logs\\winston\\errors\\.3902815f46bb95482beae1fce89c0d86e41bb9d6-audit.json",
+    "files": [
+        {
+            "date": 1693540945727,
+            "name": "D:\\next-level\\Prisma\\book-catalog-backend\\logs\\winston\\errors\\um-2023-09-01-12-error.log",
+            "hash": "0d37c88533d78425e16b4328fc172f8f0be76033470b3e0e4483cd1bf0f9928a"
+        }
+    ],
+    "hashType": "sha256"
+}

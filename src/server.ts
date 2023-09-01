@@ -1,42 +1,37 @@
 import { Server } from 'http';
-import mongoose from 'mongoose';
+
+import config from './config';
 import { app } from './app';
-import config from './config/index';
-import { errorLogger, logger } from './shared/logger';
+// import { errorlogger, logger } from './shared/logger';
 
-process.on('uncaughtException', error => {
-  errorLogger.error(error);
-  process.exit(1);
-});
+async function bootstrap() {
+  const server: Server = app.listen(config.port, () => {
+    console.log(`Server running on port ${config.port}`);
+  });
 
-let server: Server;
-async function main() {
-  try {
-    await mongoose.connect(config.database_url as string);
-    logger.info('DB Connected on Successfully');
-    server = app.listen(config.port, () => {
-      logger.info(`Example app listening on port ${config.port}`);
-    });
-  } catch (error) {
-    errorLogger.error(error);
-    throw error;
-  }
-  process.on('unhandledRejection', error => {
+  const exitHandler = () => {
     if (server) {
       server.close(() => {
-        errorLogger.error(error);
-        process.exit(1);
+        console.log('Server closed');
       });
-    } else {
-      process.exit(1);
+    }
+    process.exit(1);
+  };
+
+  const unexpectedErrorHandler = (error: unknown) => {
+    console.log(error);
+    exitHandler();
+  };
+
+  process.on('uncaughtException', unexpectedErrorHandler);
+  process.on('unhandledRejection', unexpectedErrorHandler);
+
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received');
+    if (server) {
+      server.close();
     }
   });
 }
-main().catch(err => logger.error(err));
 
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM is received');
-  if (server) {
-    server.close();
-  }
-});
+bootstrap();
