@@ -6,9 +6,7 @@ import httpStatus from 'http-status';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
-  console.log(user);
-  const result = await OrderService.insertIntoDB(req.body);
-
+  const result = await OrderService.insertIntoDB(user, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -16,5 +14,18 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getAllOrder = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const result = await OrderService.getAllOrder(user);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order retrieved by admin successfully',
+    data: result,
+  });
+});
 
-export const OrderController = { insertIntoDB };
+export const OrderController = {
+  insertIntoDB,
+  getAllOrder,
+};

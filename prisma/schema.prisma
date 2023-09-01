@@ -20,6 +20,8 @@ model User {
   updatedAt  DateTime @updatedAt
   reviews    Review[]
   orders     Order[]
+
+  @@map("users")
 }
 
 model Category {
@@ -28,6 +30,8 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   books     Book[]
+
+  @@map("categories")
 }
 
 model Book {
@@ -42,6 +46,8 @@ model Book {
   categoryId      String
   category        Category @relation(fields: [categoryId], references: [id])
   reviews         Review[]
+
+  @@map("books")
 }
 
 model Review {
@@ -54,6 +60,8 @@ model Review {
   user      User     @relation(fields: [userId], references: [id])
   bookId    String
   book      Book     @relation(fields: [bookId], references: [id])
+
+  @@map("reviews")
 }
 
 model Order {
@@ -64,6 +72,8 @@ model Order {
   status       StatusType @default(pending)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  @@map("orders")
 }
 
 enum RoleUser {
