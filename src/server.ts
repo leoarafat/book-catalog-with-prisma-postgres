@@ -2,7 +2,6 @@ import { Server } from 'http';
 
 import config from './config';
 import { app } from './app';
-// import { errorlogger, logger } from './shared/logger';
 
 async function bootstrap() {
   const server: Server = app.listen(config.port, () => {

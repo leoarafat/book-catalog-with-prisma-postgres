@@ -5,9 +5,6 @@ import { prisma } from '../../../shared/prisma';
 import ApiError from '../../../errors/Apierror';
 import httpStatus from 'http-status';
 import bcrypt from 'bcrypt';
-// import { jwtHelpers } from '../../../helpers/jwtHelpers';
-// import config from '../../../config';
-// import { Secret } from 'jsonwebtoken';
 
 export const insertIntoDB = async (payload: User) => {
   const isExist = await prisma.user.findFirst({
@@ -28,22 +25,10 @@ export const insertIntoDB = async (payload: User) => {
   if (!result) {
     throw new ApiError(404, 'Something Went wrong');
   }
-  // const { email, role } = payload;
-  // const accessToken = jwtHelpers.createToken(
-  //   { email, role },
-  //   config.jwt.secret as Secret,
-  //   config.jwt.expires_in as string,
-  // );
-  // //Create refresh token
-  // const refreshToken = jwtHelpers.createToken(
-  //   { email, role },
-  //   config.jwt.refresh_secret as Secret,
-  //   config.jwt.refresh_expires_in as string,
-  // );
+
   const { password, ...userWithoutPassword } = result;
 
   return userWithoutPassword;
-  // return result;
 };
 export const AuthService = {
   insertIntoDB,
