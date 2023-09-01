@@ -20,7 +20,19 @@ const getAllOrder = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Order retrieved by admin successfully',
+    message: 'Order retrieved  successfully',
+    data: result,
+  });
+});
+const getOrderById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = req.user;
+
+  const result = await OrderService.getOrderById(id, user);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order retrieved by id successfully',
     data: result,
   });
 });
@@ -28,4 +40,5 @@ const getAllOrder = catchAsync(async (req: Request, res: Response) => {
 export const OrderController = {
   insertIntoDB,
   getAllOrder,
+  getOrderById,
 };

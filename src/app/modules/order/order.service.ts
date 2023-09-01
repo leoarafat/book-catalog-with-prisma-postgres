@@ -28,12 +28,42 @@ const getAllOrder = async (user: any) => {
         user: true,
       },
     });
+
     return result;
   }
   if (role === 'customer') {
     const result = await prisma.order.findMany({
       where: {
         userId: id,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return result;
+  }
+};
+
+const getOrderById = async (orderId: string, user: any) => {
+  const { role, id } = user;
+
+  if (role === 'customer') {
+    const result = await prisma.order.findUnique({
+      where: {
+        id: orderId,
+        userId: id,
+      },
+      include: {
+        user: true,
+      },
+    });
+    return result;
+  }
+  if (role === 'admin') {
+    const result = await prisma.order.findUnique({
+      where: {
+        id: orderId,
       },
       include: {
         user: true,
@@ -46,4 +76,5 @@ const getAllOrder = async (user: any) => {
 export const OrderService = {
   insertIntoDB,
   getAllOrder,
+  getOrderById,
 };
