@@ -8,5 +8,10 @@ router.post(
 
   AuthController.insertIntoDB,
 );
+router.post(
+  '/signin',
+
+  AuthController.loginUser,
+);
 
 export const AuthRoutes = router;

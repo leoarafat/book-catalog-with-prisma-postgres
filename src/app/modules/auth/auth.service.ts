@@ -5,6 +5,10 @@ import { prisma } from '../../../shared/prisma';
 import ApiError from '../../../errors/Apierror';
 import httpStatus from 'http-status';
 import bcrypt from 'bcrypt';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
+import config from '../../../config';
+import { Secret } from 'jsonwebtoken';
+import { ILoginUser, ILoginUserResponse } from './auth.interface';
 
 export const insertIntoDB = async (payload: User) => {
   const isExist = await prisma.user.findFirst({
@@ -30,6 +34,46 @@ export const insertIntoDB = async (payload: User) => {
 
   return userWithoutPassword;
 };
+const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
+  const { email, password } = payload;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) {
+    throw new ApiError(404, 'User does not exist');
+  }
+
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordMatched) {
+    throw new Error('Incorrect password');
+  }
+
+  //create access token & refresh token
+
+  const accessToken = jwtHelpers.createToken(
+    { email: user.email, role: user.role },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string,
+  );
+
+  //Create refresh token
+  const refreshToken = jwtHelpers.createToken(
+    { email: user.email, role: user.role },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string,
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
 export const AuthService = {
   insertIntoDB,
+  loginUser,
 };

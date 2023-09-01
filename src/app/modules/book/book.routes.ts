@@ -17,7 +17,7 @@ router.get(
   BookController.getSingleBook,
 );
 router.get(
-  '/categoryId/:id',
+  '/:id/category',
 
   BookController.getBooksByCategoryId,
 );

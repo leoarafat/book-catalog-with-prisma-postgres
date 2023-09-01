@@ -18,6 +18,9 @@ const getSingleCategory = async (id: string) => {
     where: {
       id,
     },
+    include: {
+      books: true,
+    },
   });
   return Category;
 };
