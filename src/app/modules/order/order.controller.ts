@@ -5,6 +5,8 @@ import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  console.log(user);
   const result = await OrderService.insertIntoDB(req.body);
 
   sendResponse(res, {

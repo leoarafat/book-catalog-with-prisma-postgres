@@ -1,17 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Book, Prisma } from '@prisma/client';
 import { prisma } from '../../../shared/prisma';
-import { IBookFilterRequest } from './book.interface';
 import {
   IGenericResponse,
   IPaginationOptions,
 } from '../../../interfaces/paginations';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-import {
-  BookRelationalFields,
-  BookRelationalFieldsMapper,
-  BookSearchAbleFields,
-} from './book.constants';
+import { BookSearchAbleFields } from './book.constants';
 
 const createBook = async (payload: Book): Promise<Book> => {
   const result = await prisma.book.create({
@@ -24,46 +19,36 @@ const createBook = async (payload: Book): Promise<Book> => {
 };
 
 const getAllBook = async (
-  filters: IBookFilterRequest,
+  filters: any,
   paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<Book[]>> => {
   const { limit, page, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
 
-  const { searchTerm, minPrice, maxPrice, ...filtersData } = filters;
+  const { search, category, minPrice, maxPrice, ...filtersData }: any = filters;
 
   const andConditions = [];
 
-  if (searchTerm) {
+  if (search) {
     andConditions.push({
       OR: BookSearchAbleFields.map(field => ({
         [field]: {
-          contains: searchTerm,
+          contains: search,
           mode: 'insensitive',
         },
       })),
     });
   }
-
   if (Object.keys(filtersData).length > 0) {
     andConditions.push({
-      AND: Object.keys(filtersData).map(key => {
-        if (BookRelationalFields.includes(key)) {
-          return {
-            [BookRelationalFieldsMapper[key]]: {
-              id: (filtersData as any)[key],
-            },
-          };
-        } else {
-          return {
-            [key]: {
-              equals: (filtersData as any)[key],
-            },
-          };
-        }
-      }),
+      AND: Object.keys(filtersData).map(key => ({
+        [key]: {
+          equals: (filtersData as any)[key],
+        },
+      })),
     });
   }
+
   // Convert minPrice and maxPrice to floats
   const minPriceFloat = parseFloat(minPrice);
   const maxPriceFloat = parseFloat(maxPrice);
@@ -79,6 +64,14 @@ const getAllBook = async (
     andConditions.push({
       price: {
         lte: maxPriceFloat,
+      },
+    });
+  }
+
+  if (category !== undefined) {
+    andConditions.push({
+      categoryId: {
+        equals: category,
       },
     });
   }
