@@ -22,18 +22,18 @@
 
 ## Books
 
-api/v1/books/create-book (POST)
-api/v1/books (GET)
-api/v1/books/56be965d-5b43-495c-afa1-8b2cf3fed8c9/category (GET)
-api/v1/books/e05885c4-2fcb-48b0-a300-797d19397550 (GET SINGLE BOOK)
-api/v1/books/71de078f-57be-4b1c-a33d-8565aba31d26 (PATCH)
-api/v1/books/a145960c-8f9f-4a44-a31c-3b379020d6c1 (DELETE)
+1. api/v1/books/create-book (POST)
+2. api/v1/books (GET)
+3. api/v1/books/56be965d-5b43-495c-afa1-8b2cf3fed8c9/category (GET)
+4. api/v1/books/e05885c4-2fcb-48b0-a300-797d19397550 (GET SINGLE BOOK)
+5. api/v1/books/71de078f-57be-4b1c-a33d-8565aba31d26 (PATCH)
+6. api/v1/books/a145960c-8f9f-4a44-a31c-3b379020d6c1 (DELETE)
 
 ## Orders
 
-api/v1/orders/create-order (POST)
-api/v1/orders (GET)
-api/v1/orders/3d331355-d0aa-470e-a52f-2de6e0f447f8 (GET)
+1. api/v1/orders/create-order (POST)
+2. api/v1/orders (GET)
+3. api/v1/orders/3d331355-d0aa-470e-a52f-2de6e0f447f8 (GET)
 
 {
 "orderedBooks": [
