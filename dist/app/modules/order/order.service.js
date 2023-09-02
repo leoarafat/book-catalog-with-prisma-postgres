@@ -50,20 +50,13 @@ const getAllOrder = (user) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Apierror_1.default(http_status_1.default.NOT_FOUND, 'User not found');
     }
     if (role === 'admin') {
-        const result = yield prisma_1.prisma.order.findMany({
-            include: {
-                user: true,
-            },
-        });
+        const result = yield prisma_1.prisma.order.findMany({});
         return result;
     }
     if (role === 'customer') {
         const result = yield prisma_1.prisma.order.findMany({
             where: {
                 userId: id,
-            },
-            include: {
-                user: true,
             },
         });
         return result;
@@ -85,9 +78,6 @@ const getOrderById = (orderId, user) => __awaiter(void 0, void 0, void 0, functi
                 id: orderId,
                 userId: id,
             },
-            include: {
-                user: true,
-            },
         });
         return result;
     }
@@ -95,9 +85,6 @@ const getOrderById = (orderId, user) => __awaiter(void 0, void 0, void 0, functi
         const result = yield prisma_1.prisma.order.findUnique({
             where: {
                 id: orderId,
-            },
-            include: {
-                user: true,
             },
         });
         return result;

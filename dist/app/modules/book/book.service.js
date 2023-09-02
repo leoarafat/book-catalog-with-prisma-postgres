@@ -95,11 +95,13 @@ const getAllBook = (filters, paginationOptions) => __awaiter(void 0, void 0, voi
     const total = yield prisma_1.prisma.book.count({
         where: whereConditions,
     });
+    const totalPage = Math.ceil(total / size);
     return {
         meta: {
             total,
             page,
             size,
+            totalPage,
         },
         data: result,
     };
@@ -130,12 +132,19 @@ const getBooksByCategoryId = (id, paginationOptions) => __awaiter(void 0, void 0
             category: true,
         },
     });
-    const total = yield prisma_1.prisma.book.count({});
+    // const total = await prisma.book.count();
+    const total = yield prisma_1.prisma.book.count({
+        where: {
+            categoryId: id,
+        },
+    });
+    const totalPage = Math.ceil(total / size);
     return {
         meta: {
             total,
             page,
             size,
+            totalPage,
         },
         data: result,
     };
