@@ -50,24 +50,44 @@ const updateSingleUser = async (id: string, payload: Partial<User>) => {
   return user;
 };
 const deleteSingleUser = async (id: string) => {
-  const user = await prisma.user.delete({
-    where: {
-      id,
-    },
+  return prisma.$transaction(async ts => {
+    const user = await ts.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        orders: true,
+      },
+    });
 
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      contactNo: true,
-      address: true,
-      profileImg: true,
-    },
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    await ts.order.deleteMany({
+      where: {
+        userId: id,
+      },
+    });
+
+    const deletedUser = await ts.user.delete({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        contactNo: true,
+        address: true,
+        profileImg: true,
+      },
+    });
+
+    return deletedUser;
   });
-  return user;
 };
-
 export const UserService = {
   getAllUser,
   getSingleUser,
