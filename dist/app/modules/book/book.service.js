@@ -34,7 +34,7 @@ const createBook = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getAllBook = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
-    const { limit, page, skip } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
+    const { size, page, skip } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const { search, category, minPrice, maxPrice } = filters, filtersData = __rest(filters, ["search", "category", "minPrice", "maxPrice"]);
     const andConditions = [];
     if (search) {
@@ -87,7 +87,7 @@ const getAllBook = (filters, paginationOptions) => __awaiter(void 0, void 0, voi
         },
         where: whereConditions,
         skip,
-        take: limit,
+        take: size,
         orderBy: paginationOptions.sortBy && paginationOptions.sortOrder
             ? { [paginationOptions.sortBy]: paginationOptions.sortOrder }
             : { createdAt: 'desc' },
@@ -99,7 +99,7 @@ const getAllBook = (filters, paginationOptions) => __awaiter(void 0, void 0, voi
         meta: {
             total,
             page,
-            limit,
+            size,
         },
         data: result,
     };
@@ -116,13 +116,13 @@ const getSingleBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return Book;
 });
 const getBooksByCategoryId = (id, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
-    const { limit, page, skip } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
+    const { size, page, skip } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const result = yield prisma_1.prisma.book.findMany({
         where: {
             categoryId: id,
         },
         skip,
-        take: limit,
+        take: size,
         orderBy: paginationOptions.sortBy && paginationOptions.sortOrder
             ? { [paginationOptions.sortBy]: paginationOptions.sortOrder }
             : { createdAt: 'desc' },
@@ -135,7 +135,7 @@ const getBooksByCategoryId = (id, paginationOptions) => __awaiter(void 0, void 0
         meta: {
             total,
             page,
-            limit,
+            size,
         },
         data: result,
     };

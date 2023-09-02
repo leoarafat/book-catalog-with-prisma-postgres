@@ -22,7 +22,7 @@ const getAllBook = async (
   filters: any,
   paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<Book[]>> => {
-  const { limit, page, skip } =
+  const { size, page, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
 
   const { search, category, minPrice, maxPrice, ...filtersData }: any = filters;
@@ -84,7 +84,7 @@ const getAllBook = async (
     },
     where: whereConditions,
     skip,
-    take: limit,
+    take: size,
     orderBy:
       paginationOptions.sortBy && paginationOptions.sortOrder
         ? { [paginationOptions.sortBy]: paginationOptions.sortOrder }
@@ -93,11 +93,13 @@ const getAllBook = async (
   const total = await prisma.book.count({
     where: whereConditions,
   });
+  const totalPage = Math.ceil(total / size);
   return {
     meta: {
       total,
       page,
-      limit,
+      size,
+      totalPage,
     },
     data: result,
   };
@@ -118,7 +120,7 @@ const getBooksByCategoryId = async (
   id: string,
   paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<Book[]>> => {
-  const { limit, page, skip } =
+  const { size, page, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
 
   const result = await prisma.book.findMany({
@@ -126,7 +128,7 @@ const getBooksByCategoryId = async (
       categoryId: id,
     },
     skip,
-    take: limit,
+    take: size,
     orderBy:
       paginationOptions.sortBy && paginationOptions.sortOrder
         ? { [paginationOptions.sortBy]: paginationOptions.sortOrder }
@@ -135,12 +137,19 @@ const getBooksByCategoryId = async (
       category: true,
     },
   });
-  const total = await prisma.book.count({});
+  // const total = await prisma.book.count();
+  const total = await prisma.book.count({
+    where: {
+      categoryId: id,
+    },
+  });
+  const totalPage = Math.ceil(total / size);
   return {
     meta: {
       total,
       page,
-      limit,
+      size,
+      totalPage,
     },
     data: result,
   };

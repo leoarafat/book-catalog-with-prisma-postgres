@@ -66,21 +66,39 @@ const updateSingleUser = (id, payload) => __awaiter(void 0, void 0, void 0, func
     return user;
 });
 const deleteSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield prisma_1.prisma.user.delete({
-        where: {
-            id,
-        },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-            contactNo: true,
-            address: true,
-            profileImg: true,
-        },
-    });
-    return user;
+    return prisma_1.prisma.$transaction((ts) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield ts.user.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                orders: true,
+            },
+        });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        yield ts.order.deleteMany({
+            where: {
+                userId: id,
+            },
+        });
+        const deletedUser = yield ts.user.delete({
+            where: {
+                id,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                contactNo: true,
+                address: true,
+                profileImg: true,
+            },
+        });
+        return deletedUser;
+    }));
 });
 exports.UserService = {
     getAllUser,

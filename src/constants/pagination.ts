@@ -1,2 +1,2 @@
-const paginationFields = ['page', 'limit', 'sortBy', 'sortOrder'];
+const paginationFields = ['page', 'size', 'sortBy', 'sortOrder'];
 export default paginationFields;
